@@ -1,0 +1,47 @@
+version: '3.7'
+
+services:
+  drone:
+    image: drone/drone:1
+    restart: unless-stopped
+    depends_on:
+      - postgresql
+    environment:
+      - DRONE_AGENTS_ENABLED
+      - DRONE_GIT_ALWAYS_AUTH
+      - DRONE_GITEA_CLIENT_ID
+      - DRONE_GITEA_CLIENT_SECRET
+      - DRONE_GITEA_SERVER
+      - DRONE_GITHUB_CLIENT_ID
+      - DRONE_GITHUB_CLIENT_SECRET
+      - DRONE_RPC_SECRET
+      - DRONE_SERVER_HOST
+      - DRONE_SERVER_PROTO
+      - DRONE_USER_CREATE
+      - DRONE_USER_FILTER
+      - DRONE_DATABASE_DRIVER
+      - DRONE_DATABASE_DATASOURCE
+      - DRONE_DATABASE_SECRET
+    networks:
+      - drone
+    volumes:
+      - drone-vol:/data
+  postgresql:
+    image: postgres:12
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+    networks:
+      - drone
+    volumes:
+      - postgresql-vol:/var/lib/postgresql/data
+
+networks:
+  drone:
+    external: false
+
+volumes:
+  drone-vol:
+  postgresql-vol:
