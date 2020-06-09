@@ -9,6 +9,8 @@ services:
     environment:
       - DRONE_AGENTS_ENABLED
       - DRONE_GIT_ALWAYS_AUTH
+      - DRONE_LOGS_PRETTY
+      - DRONE_LOGS_COLOR
       - DRONE_GITEA_CLIENT_ID
       - DRONE_GITEA_CLIENT_SECRET
       - DRONE_GITEA_SERVER
