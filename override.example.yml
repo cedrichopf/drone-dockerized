@@ -1,31 +1,40 @@
-#version: '3.7'
-#
-#services:
-#  drone:
-#    container_name: drone
-#    networks:
-#      - proxy
-#    labels:
-#      - traefik.http.routers.drone-http.rule=Host(`drone.example.com`)
-#      - traefik.http.routers.drone-http.entrypoints=http
-#      - traefik.http.routers.drone-http.middlewares=redirect
-#      - traefik.http.routers.drone-https.rule=Host(`drone.example.com`)
-#      - traefik.http.routers.drone-https.entrypoints=https
-#      - traefik.http.routers.drone-https.tls=true
-#      - traefik.http.routers.drone-https.tls.certresolver=letsencrypt
-#      - traefik.http.services.drone.loadbalancer.server.port=80
-#      - traefik.http.middlewares.redirect.redirectscheme.scheme=https
-#  postgresql:
-#    container_name: drone-db
-#
-#networks:
-#  drone:
-#    name: drone
-#  proxy:
-#    external: true
-#
-#volumes:
-#  drone-vol:
-#    name: drone
-#  postgresql-vol:
-#    name: drone-db
+version: '3.7'
+
+services:
+  # Service Configuration
+  # Overwrite or add configuration values to the docker-compose deployment
+  drone:
+    container_name: drone # Remove if using multiple instances
+    # If Traefik is not used, ports can be published by using the section below
+    # to make the Drone instance available, e.g.:
+    #ports:
+    #  - "80:80"
+    networks:
+      - proxy # Remove if Traefik is not used
+    labels:
+      # Traefik configuration for Drone, hostnames need to be changed
+      - traefik.http.routers.drone-http.rule=Host(`drone.example.com`)
+      - traefik.http.routers.drone-http.entrypoints=http
+      - traefik.http.routers.drone-http.middlewares=redirect
+      - traefik.http.routers.drone-https.rule=Host(`drone.example.com`)
+      - traefik.http.routers.drone-https.entrypoints=https
+      - traefik.http.routers.drone-https.tls=true
+      - traefik.http.routers.drone-https.tls.certresolver=letsencrypt
+      - traefik.http.services.drone.loadbalancer.server.port=80
+      - traefik.http.middlewares.redirect.redirectscheme.scheme=https
+  postgresql:
+    container_name: drone-db # Remove if using multiple instances
+
+networks:
+  # The proxy network is used by Traefik to discover and connect the HTTP services
+  proxy:
+    external: true
+  drone:
+    name: drone
+
+# Change the volume configuration as needed, e.g. configure NFS volumes
+volumes:
+  drone-vol:
+    name: drone
+  postgresql-vol:
+    name: drone-db
